@@ -1,0 +1,132 @@
+[gd_scene load_steps=11 format=3 uid="uid://dymf11ijk8xuf"]
+
+[ext_resource type="Script" uid="uid://dr15j5bojm2g7" path="res://main.gd" id="1_272bh"]
+[ext_resource type="Script" uid="uid://cl5n1tvi7rtve" path="res://network/lobby.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://d15cecdxc7vdr" path="res://ui/menu.gd" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://7vwkljckmgi5" path="res://network/peer_info.gd" id="2_7mycd"]
+[ext_resource type="Script" uid="uid://dysmf7kc4og5t" path="res://ui/ui.gd" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://di5aayihgc0o0" path="res://network/turtle_lobby_info.gd" id="3_272bh"]
+[ext_resource type="Script" uid="uid://dqpieuc8bymi2" path="res://network/turtle_peer_info.gd" id="4_5vw27"]
+[ext_resource type="PackedScene" uid="uid://d0o2uql8pqnb0" path="res://player_hud.tscn" id="7_5vw27"]
+
+[sub_resource type="Resource" id="Resource_kek77"]
+script = ExtResource("3_272bh")
+map_name = "La Isla"
+peers = Array[ExtResource("2_7mycd")]([])
+metadata/_custom_type_script = "uid://di5aayihgc0o0"
+
+[sub_resource type="Resource" id="Resource_4c57u"]
+script = ExtResource("4_5vw27")
+peer_name = "Los Redondos"
+players = [["hola", 4]]
+peer_id = 0
+metadata/_custom_type_script = "uid://dqpieuc8bymi2"
+
+[node name="main" type="Node2D"]
+script = ExtResource("1_272bh")
+
+[node name="lobby" type="Node2D" parent="."]
+script = ExtResource("1_ig7tw")
+lobby_info = SubResource("Resource_kek77")
+local_peer_info = SubResource("Resource_4c57u")
+
+[node name="ui" type="CanvasLayer" parent="."]
+script = ExtResource("2_h2yge")
+player_hud_model = ExtResource("7_5vw27")
+player_hud_container = NodePath("panel/player_container")
+
+[node name="state_label" type="Label" parent="ui"]
+unique_name_in_owner = true
+offset_right = 40.0
+offset_bottom = 23.0
+text = "NOTHING"
+
+[node name="menu" type="PanelContainer" parent="ui"]
+offset_left = 92.0
+offset_top = 72.0
+offset_right = 623.0
+offset_bottom = 513.0
+script = ExtResource("2_0xm2m")
+
+[node name="initial" type="Control" parent="ui/menu"]
+visible = false
+layout_mode = 2
+
+[node name="create_server_button" type="Button" parent="ui/menu/initial"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Create Server"
+
+[node name="connect_button" type="Button" parent="ui/menu/initial"]
+layout_mode = 0
+offset_top = 49.0
+offset_right = 113.0
+offset_bottom = 80.0
+text = "Connect as Client"
+
+[node name="connecting" type="Control" parent="ui/menu"]
+visible = false
+layout_mode = 2
+
+[node name="label" type="Label" parent="ui/menu/connecting"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Connecting..."
+
+[node name="lobby" type="Control" parent="ui/menu"]
+layout_mode = 2
+
+[node name="label" type="Label" parent="ui/menu/lobby"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "LOBBY"
+
+[node name="panel" type="Panel" parent="ui"]
+offset_left = 669.0
+offset_top = 140.0
+offset_right = 1110.0
+offset_bottom = 522.0
+
+[node name="player_container" type="VBoxContainer" parent="ui/panel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="control" type="Control" parent="ui/panel/player_container"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="new_player_name" type="TextEdit" parent="ui/panel/player_container/control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -70.0
+grow_horizontal = 2
+grow_vertical = 2
+placeholder_text = "Add a player..."
+
+[node name="add_player_button" type="Button" parent="ui/panel/player_container/control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -53.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "+"
+
+[connection signal="state_changed" from="lobby" to="ui" method="_on_network_state_changed"]
+[connection signal="pressed" from="ui/menu/initial/create_server_button" to="lobby" method="create_server"]
+[connection signal="pressed" from="ui/menu/initial/connect_button" to="lobby" method="create_client"]
+[connection signal="pressed" from="ui/panel/player_container/control/add_player_button" to="ui" method="_on_add_player_button_pressed"]

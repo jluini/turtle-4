@@ -1,34 +1,27 @@
-[gd_scene load_steps=11 format=3 uid="uid://dymf11ijk8xuf"]
+[gd_scene load_steps=9 format=3 uid="uid://dymf11ijk8xuf"]
 
 [ext_resource type="Script" uid="uid://dr15j5bojm2g7" path="res://main.gd" id="1_272bh"]
 [ext_resource type="Script" uid="uid://cl5n1tvi7rtve" path="res://network/lobby.gd" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://d15cecdxc7vdr" path="res://ui/menu.gd" id="2_0xm2m"]
-[ext_resource type="Script" uid="uid://7vwkljckmgi5" path="res://network/peer_info.gd" id="2_7mycd"]
 [ext_resource type="Script" uid="uid://dysmf7kc4og5t" path="res://ui/ui.gd" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://dqpieuc8bymi2" path="res://network/turtle_peer_info.gd" id="3_5vw27"]
 [ext_resource type="Script" uid="uid://di5aayihgc0o0" path="res://network/turtle_lobby_info.gd" id="3_272bh"]
-[ext_resource type="Script" uid="uid://dqpieuc8bymi2" path="res://network/turtle_peer_info.gd" id="4_5vw27"]
 [ext_resource type="PackedScene" uid="uid://d0o2uql8pqnb0" path="res://player_hud.tscn" id="7_5vw27"]
 
 [sub_resource type="Resource" id="Resource_kek77"]
 script = ExtResource("3_272bh")
 map_name = "La Isla"
-peers = Array[ExtResource("2_7mycd")]([])
+peers = []
 metadata/_custom_type_script = "uid://di5aayihgc0o0"
-
-[sub_resource type="Resource" id="Resource_4c57u"]
-script = ExtResource("4_5vw27")
-peer_name = "Los Redondos"
-players = [["hola", 4]]
-peer_id = 0
-metadata/_custom_type_script = "uid://dqpieuc8bymi2"
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_272bh")
 
-[node name="lobby" type="Node2D" parent="."]
+[node name="network" type="Node2D" parent="."]
 script = ExtResource("1_ig7tw")
+lobby_info_class = ExtResource("3_272bh")
+peer_info_class = ExtResource("3_5vw27")
 lobby_info = SubResource("Resource_kek77")
-local_peer_info = SubResource("Resource_4c57u")
 
 [node name="ui" type="CanvasLayer" parent="."]
 script = ExtResource("2_h2yge")
@@ -44,8 +37,8 @@ text = "NOTHING"
 [node name="menu" type="PanelContainer" parent="ui"]
 offset_left = 92.0
 offset_top = 72.0
-offset_right = 623.0
-offset_bottom = 513.0
+offset_right = 485.0
+offset_bottom = 339.0
 script = ExtResource("2_0xm2m")
 
 [node name="initial" type="Control" parent="ui/menu"]
@@ -126,7 +119,18 @@ grow_horizontal = 0
 grow_vertical = 2
 text = "+"
 
-[connection signal="state_changed" from="lobby" to="ui" method="_on_network_state_changed"]
-[connection signal="pressed" from="ui/menu/initial/create_server_button" to="lobby" method="create_server"]
-[connection signal="pressed" from="ui/menu/initial/connect_button" to="lobby" method="create_client"]
+[node name="peer_list_container" type="PanelContainer" parent="ui"]
+offset_left = 69.0
+offset_top = 381.0
+offset_right = 295.0
+offset_bottom = 623.0
+
+[node name="peer_list" type="VBoxContainer" parent="ui/peer_list_container"]
+layout_mode = 2
+
+[connection signal="peer_activated" from="network" to="ui" method="_on_network_peer_activated"]
+[connection signal="peer_added" from="network" to="ui" method="_on_network_peer_added"]
+[connection signal="state_changed" from="network" to="ui" method="_on_network_state_changed"]
+[connection signal="pressed" from="ui/menu/initial/create_server_button" to="network" method="create_server"]
+[connection signal="pressed" from="ui/menu/initial/connect_button" to="network" method="create_client"]
 [connection signal="pressed" from="ui/panel/player_container/control/add_player_button" to="ui" method="_on_add_player_button_pressed"]

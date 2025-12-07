@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://les68vvh8t1h"]
+
+[ext_resource type="Texture2D" uid="uid://b6fnlbl6sw0t" path="res://base.png" id="1_40m0m"]
+
+[node name="map" type="Node2D"]
+
+[node name="background" type="Sprite2D" parent="."]
+position = Vector2(0, 350)
+texture = ExtResource("1_40m0m")
+offset = Vector2(0, -350)
+
+[node name="background2" type="Sprite2D" parent="."]
+position = Vector2(-1920, 350)
+texture = ExtResource("1_40m0m")
+offset = Vector2(0, -350)
+
+[node name="background3" type="Sprite2D" parent="."]
+position = Vector2(1920, 350)
+texture = ExtResource("1_40m0m")
+offset = Vector2(0, -350)

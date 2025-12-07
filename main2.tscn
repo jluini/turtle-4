@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://cwyvejvawmwdf"]
+
+[ext_resource type="Script" uid="uid://x6whn2c37pjb" path="res://game.gd" id="1_oex3p"]
+[ext_resource type="PackedScene" uid="uid://les68vvh8t1h" path="res://beach/beach.tscn" id="2_dmrlw"]
+
+[node name="game" type="Node2D"]
+script = ExtResource("1_oex3p")
+
+[node name="ui" type="CanvasLayer" parent="."]
+
+[node name="overlay" type="ColorRect" parent="ui"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.784314)
+
+[node name="start_game_button" type="Button" parent="ui"]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -334.0
+offset_right = 100.0
+offset_bottom = -258.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Start Game"
+
+[node name="offset" type="Node2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="simulation" type="Node2D" parent="offset"]
+
+[node name="map" parent="offset/simulation" instance=ExtResource("2_dmrlw")]
+
+[node name="camera" type="Camera2D" parent="offset"]

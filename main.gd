@@ -16,7 +16,7 @@ func add_player(new_player_name: String) -> void:
 		_add_player.rpc_id(1, new_player_name)
 
 @rpc("any_peer", "reliable")
-func _add_player(new_player_name: String) -> void:
+func _add_player(_new_player_name: String) -> void:
 	pass
 	#var new_player = Turtle
 		

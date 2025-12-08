@@ -1,10 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://cwyvejvawmwdf"]
+[gd_scene load_steps=7 format=3 uid="uid://cwyvejvawmwdf"]
 
 [ext_resource type="Script" uid="uid://x6whn2c37pjb" path="res://game.gd" id="1_oex3p"]
+[ext_resource type="Script" uid="uid://1sd7shaggerl" path="res://network/network.gd" id="2_3yxjw"]
+[ext_resource type="Script" uid="uid://retvb54jhg8a" path="res://hud/state_label.gd" id="2_8ce7h"]
 [ext_resource type="PackedScene" uid="uid://les68vvh8t1h" path="res://beach/beach.tscn" id="2_dmrlw"]
+[ext_resource type="Script" uid="uid://dhtkgjssx36v2" path="res://hud/hud.gd" id="3_sck4r"]
+[ext_resource type="Script" uid="uid://d15cecdxc7vdr" path="res://ui/menu.gd" id="4_elgsa"]
 
 [node name="game" type="Node2D"]
 script = ExtResource("1_oex3p")
+
+[node name="network" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_3yxjw")
 
 [node name="ui" type="CanvasLayer" parent="."]
 
@@ -16,20 +24,129 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.784314)
 
-[node name="start_game_button" type="Button" parent="ui"]
-visible = false
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+[node name="hud" type="Control" parent="ui"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 616.0
+offset_bottom = 830.0
+script = ExtResource("3_sck4r")
+
+[node name="background" type="ColorRect" parent="ui/hud"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -100.0
-offset_top = -334.0
-offset_right = 100.0
-offset_bottom = -258.0
 grow_horizontal = 2
-grow_vertical = 0
-text = "Start Game"
+grow_vertical = 2
+color = Color(0, 0, 0.533333, 0.27451)
+
+[node name="state_label" type="Label" parent="ui/hud"]
+layout_mode = 0
+offset_right = 302.0
+offset_bottom = 95.0
+theme_override_font_sizes/font_size = 50
+text = "NOTHING"
+script = ExtResource("2_8ce7h")
+
+[node name="menu" type="Control" parent="ui/hud"]
+anchors_preset = 0
+offset_left = 83.0
+offset_top = 469.0
+offset_right = 501.0
+offset_bottom = 944.0
+script = ExtResource("4_elgsa")
+
+[node name="initial" type="Control" parent="ui/hud/menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="create_server_button" type="Button" parent="ui/hud/menu/initial"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = 227.0
+offset_right = 318.0
+offset_bottom = 330.0
+theme_override_font_sizes/font_size = 30
+text = "Create Server"
+
+[node name="connect_button" type="Button" parent="ui/hud/menu/initial"]
+layout_mode = 0
+offset_left = 51.0
+offset_top = 345.0
+offset_right = 324.0
+offset_bottom = 448.0
+theme_override_font_sizes/font_size = 30
+text = "Join as Client"
+
+[node name="text_edit" type="TextEdit" parent="ui/hud/menu/initial"]
+layout_mode = 0
+offset_left = 115.0
+offset_top = 110.0
+offset_right = 516.0
+offset_bottom = 192.0
+theme_override_font_sizes/font_size = 40
+placeholder_text = "Your name..."
+
+[node name="label" type="Label" parent="ui/hud/menu/initial"]
+layout_mode = 0
+offset_left = -26.0
+offset_top = 128.0
+offset_right = 69.0
+offset_bottom = 170.0
+theme_override_font_sizes/font_size = 30
+text = "Name:"
+
+[node name="empty" type="Control" parent="ui/hud/menu"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="connecting" type="Control" parent="ui/hud/menu"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="label" type="Label" parent="ui/hud/menu/connecting"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 34.0
+offset_right = 114.0
+offset_bottom = 83.0
+theme_override_font_sizes/font_size = 40
+text = "Connecting...
+"
+
+[node name="lobby" type="Control" parent="ui/hud/menu"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="label" type="Label" parent="ui/hud/menu/lobby"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 34.0
+offset_right = 114.0
+offset_bottom = 83.0
+theme_override_font_sizes/font_size = 40
+text = "LOBBY"
 
 [node name="offset" type="Node2D" parent="."]
 position = Vector2(960, 540)
@@ -39,3 +156,8 @@ position = Vector2(960, 540)
 [node name="map" parent="offset/simulation" instance=ExtResource("2_dmrlw")]
 
 [node name="camera" type="Camera2D" parent="offset"]
+
+[connection signal="state_changed" from="network" to="ui/hud" method="_on_network_state_changed"]
+[connection signal="state_changed" from="network" to="ui/hud/state_label" method="_on_network_state_changed"]
+[connection signal="pressed" from="ui/hud/menu/initial/create_server_button" to="ui/hud" method="_on_create_server_button_pressed"]
+[connection signal="pressed" from="ui/hud/menu/initial/connect_button" to="ui/hud" method="_on_connect_button_pressed"]

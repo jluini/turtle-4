@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Turtle 4"
-run/main_scene="uid://dymf11ijk8xuf"
+run/main_scene="uid://cwyvejvawmwdf"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 

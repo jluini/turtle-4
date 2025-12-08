@@ -1,4 +1,4 @@
-extends PanelContainer
+extends Node
 
 func _ready() -> void:
 	var first_child = true

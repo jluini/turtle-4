@@ -42,7 +42,6 @@ offset_bottom = 339.0
 script = ExtResource("2_0xm2m")
 
 [node name="initial" type="Control" parent="ui/menu"]
-visible = false
 layout_mode = 2
 
 [node name="create_server_button" type="Button" parent="ui/menu/initial"]
@@ -69,6 +68,7 @@ offset_bottom = 23.0
 text = "Connecting..."
 
 [node name="lobby" type="Control" parent="ui/menu"]
+visible = false
 layout_mode = 2
 
 [node name="label" type="Label" parent="ui/menu/lobby"]

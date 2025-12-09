@@ -1,4 +1,4 @@
 extends Label
 
-func _on_network_state_changed(new_state: Lobby.State):
-	text = Lobby.State.find_key(new_state)
+func _on_state_changed(new_state: String):
+	text = new_state

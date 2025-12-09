@@ -1,13 +1,15 @@
 class_name Network
 extends Node
 
-signal state_changed(new_state: State)
+signal state_changed(new_state: String)
 signal peer_added(new_peer: PeerInfo)
 signal peer_activated(peer: PeerInfo)
 
 const PORT = 7000
 const DEFAULT_SERVER_IP = "127.0.0.1" # IPv4 localhost
 const MAX_CONNECTIONS = 20
+
+@export var game: Node
 
 enum State {
 	NOTHING,
@@ -22,7 +24,7 @@ enum State {
 var state: State = State.NOTHING:
 	set(new_state):
 		state = new_state
-		emit_signal("state_changed", new_state)
+		emit_signal("state_changed", State.find_key(new_state))
 
 func _ready() -> void:
 	state = State.INITIAL
@@ -60,10 +62,36 @@ func connect_as_client() -> int:
 	
 	return OK
 
+### RPCs
+
+@rpc("authority", "reliable")
+func you_are_welcome(serialized_lobby_info):
+	print("%s: received you_are_welcome with %s" % [multiplayer.get_unique_id(), serialized_lobby_info])
+	
+	game.set_lobby_info(serialized_lobby_info)
+	#lobby_info = lobby_info_class.from_dict(serialized_lobby_info)
+	#
+	#for peer_info in lobby_info.peers:
+		#emit_signal("peer_added", peer_info)
+	#
+	#this_is_my_initial_peer_info.rpc_id(1, local_peer_info.serialize())
+
 ### Network callbacks
 
 func _on_peer_connected(id):
 	print("%s: peer_connected %s" % [multiplayer.get_unique_id(), id])
+	if multiplayer.is_server():
+		assert(id > 1)
+		match state:
+			State.HOSTING:
+				# player is welcome to lobby
+				var lobby_data = game.get_lobby_info()
+				print("%s: Calling you_are_welcome with '%s'" % [multiplayer.get_unique_id(), lobby_data])
+				you_are_welcome.rpc_id(id, lobby_data)
+
+			State.PLAYING:
+				# player is welcome as spectator ?
+				pass # TODO
 
 func _on_peer_disconnected(id):
 	print("%s: peer_disconnected %s" % [multiplayer.get_unique_id(), id])

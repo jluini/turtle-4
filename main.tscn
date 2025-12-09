@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://dymf11ijk8xuf"]
 
 [ext_resource type="Script" uid="uid://dr15j5bojm2g7" path="res://main.gd" id="1_272bh"]
-[ext_resource type="Script" uid="uid://cl5n1tvi7rtve" path="res://network/lobby.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://cl5n1tvi7rtve" path="res://network/old_game.gd" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://d15cecdxc7vdr" path="res://ui/menu.gd" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://dysmf7kc4og5t" path="res://ui/ui.gd" id="2_h2yge"]
 [ext_resource type="Script" uid="uid://dqpieuc8bymi2" path="res://network/turtle_peer_info.gd" id="3_5vw27"]

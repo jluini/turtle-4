@@ -1,18 +1,45 @@
-[gd_scene load_steps=7 format=3 uid="uid://cwyvejvawmwdf"]
+[gd_scene load_steps=13 format=3 uid="uid://cwyvejvawmwdf"]
 
 [ext_resource type="Script" uid="uid://x6whn2c37pjb" path="res://game.gd" id="1_oex3p"]
+[ext_resource type="Script" uid="uid://d4m2ws481nm41" path="res://main/lobby.gd" id="2_0rof8"]
 [ext_resource type="Script" uid="uid://1sd7shaggerl" path="res://network/network.gd" id="2_3yxjw"]
 [ext_resource type="Script" uid="uid://retvb54jhg8a" path="res://hud/state_label.gd" id="2_8ce7h"]
 [ext_resource type="PackedScene" uid="uid://les68vvh8t1h" path="res://beach/beach.tscn" id="2_dmrlw"]
 [ext_resource type="Script" uid="uid://dhtkgjssx36v2" path="res://hud/hud.gd" id="3_sck4r"]
+[ext_resource type="Script" uid="uid://ccicp3bceve28" path="res://main/resources/scenario.gd" id="3_w8cd7"]
 [ext_resource type="Script" uid="uid://d15cecdxc7vdr" path="res://ui/menu.gd" id="4_elgsa"]
+[ext_resource type="Script" uid="uid://b81hcsupdat74" path="res://hud/hud_2.gd" id="6_1mhn8"]
+[ext_resource type="Script" uid="uid://bt1q5tgsvgflm" path="res://hud/lobby_hud.gd" id="10_l8hla"]
+[ext_resource type="Script" uid="uid://buhrcw4q1vx6t" path="res://hud/player_hud.gd" id="11_hi5em"]
+
+[sub_resource type="Resource" id="Resource_l8hla"]
+script = ExtResource("3_w8cd7")
+name = "The Beach"
+min_players = 2
+max_players = 2
+scene = ExtResource("2_dmrlw")
+metadata/_custom_type_script = "uid://ccicp3bceve28"
 
 [node name="game" type="Node2D"]
 script = ExtResource("1_oex3p")
 
-[node name="network" type="Node" parent="."]
+[node name="lobby" type="Node" parent="."]
+script = ExtResource("2_0rof8")
+scenario = SubResource("Resource_l8hla")
+
+[node name="network" type="Node" parent="." node_paths=PackedStringArray("game")]
 unique_name_in_owner = true
 script = ExtResource("2_3yxjw")
+game = NodePath("..")
+
+[node name="offset" type="Node2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="simulation" type="Node2D" parent="offset"]
+
+[node name="map" parent="offset/simulation" instance=ExtResource("2_dmrlw")]
+
+[node name="camera" type="Camera2D" parent="offset"]
 
 [node name="ui" type="CanvasLayer" parent="."]
 
@@ -55,6 +82,7 @@ offset_top = 469.0
 offset_right = 501.0
 offset_bottom = 944.0
 script = ExtResource("4_elgsa")
+initial_view = "initial"
 
 [node name="initial" type="Control" parent="ui/hud/menu"]
 layout_mode = 1
@@ -82,7 +110,7 @@ offset_bottom = 448.0
 theme_override_font_sizes/font_size = 30
 text = "Join as Client"
 
-[node name="text_edit" type="TextEdit" parent="ui/hud/menu/initial"]
+[node name="text_edit" type="LineEdit" parent="ui/hud/menu/initial"]
 layout_mode = 0
 offset_left = 115.0
 offset_top = 110.0
@@ -148,16 +176,233 @@ offset_bottom = 83.0
 theme_override_font_sizes/font_size = 40
 text = "LOBBY"
 
-[node name="offset" type="Node2D" parent="."]
-position = Vector2(960, 540)
+[node name="hud2" type="GridContainer" parent="ui"]
+offset_left = 1183.0
+offset_top = 101.0
+offset_right = 1687.0
+offset_bottom = 351.0
+columns = 2
+script = ExtResource("6_1mhn8")
 
-[node name="simulation" type="Node2D" parent="offset"]
+[node name="menu" type="Control" parent="ui/hud2"]
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+script = ExtResource("4_elgsa")
 
-[node name="map" parent="offset/simulation" instance=ExtResource("2_dmrlw")]
+[node name="initial" type="Control" parent="ui/hud2/menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="camera" type="Camera2D" parent="offset"]
+[node name="background" type="ColorRect" parent="ui/hud2/menu/initial"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0, 0.137255)
 
+[node name="v_box_container" type="VBoxContainer" parent="ui/hud2/menu/initial"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="play_versus_button" type="Button" parent="ui/hud2/menu/initial/v_box_container"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+text = "Play 1v1"
+
+[node name="line_edit" type="LineEdit" parent="ui/hud2/menu/initial/v_box_container"]
+layout_mode = 2
+placeholder_text = "Your name..."
+
+[node name="create_server_button" type="Button" parent="ui/hud2/menu/initial/v_box_container"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+text = "Create Server"
+
+[node name="connect_button" type="Button" parent="ui/hud2/menu/initial/v_box_container"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+text = "Join as Client"
+
+[node name="lobby" type="Control" parent="ui/hud2/menu"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("10_l8hla")
+
+[node name="background" type="ColorRect" parent="ui/hud2/menu/lobby"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0, 0.137255)
+
+[node name="v_box_container" type="VBoxContainer" parent="ui/hud2/menu/lobby"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="label" type="Label" parent="ui/hud2/menu/lobby/v_box_container"]
+layout_mode = 2
+text = "LOBBY"
+
+[node name="scenario" type="Control" parent="ui/hud2/menu/lobby/v_box_container"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+
+[node name="label" type="Label" parent="ui/hud2/menu/lobby/v_box_container/scenario"]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_right = 80.0
+grow_vertical = 2
+text = "Scenario:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="scenario_name" type="Label" parent="ui/hud2/menu/lobby/v_box_container/scenario"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -3.5
+offset_bottom = 3.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+text = "NOTHING"
+
+[node name="player_list" type="VBoxContainer" parent="ui/hud2/menu/lobby/v_box_container"]
+layout_mode = 2
+
+[node name="model" type="HBoxContainer" parent="ui/hud2/menu/lobby/v_box_container/player_list"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+script = ExtResource("11_hi5em")
+
+[node name="id_label" type="Label" parent="ui/hud2/menu/lobby/v_box_container/player_list/model"]
+layout_mode = 2
+text = "0"
+
+[node name="name_label" type="Label" parent="ui/hud2/menu/lobby/v_box_container/player_list/model"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Player Name"
+
+[node name="button" type="Button" parent="ui/hud2/menu/lobby/v_box_container/player_list/model"]
+layout_mode = 2
+text = "T1"
+
+[node name="players" type="Control" parent="ui/hud2"]
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+
+[node name="background" type="ColorRect" parent="ui/hud2/players"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0, 0.137255)
+
+[node name="v_box_container" type="VBoxContainer" parent="ui/hud2/players"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="game_state" type="Control" parent="ui/hud2/players/v_box_container"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+
+[node name="label" type="Label" parent="ui/hud2/players/v_box_container/game_state"]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_right = 80.0
+grow_vertical = 2
+text = "Game:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="game_state_label" type="Label" parent="ui/hud2/players/v_box_container/game_state"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -3.5
+offset_bottom = 3.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+text = "NOTHING"
+script = ExtResource("2_8ce7h")
+
+[node name="network_state" type="Control" parent="ui/hud2/players/v_box_container"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+
+[node name="label" type="Label" parent="ui/hud2/players/v_box_container/network_state"]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_right = 80.0
+grow_vertical = 2
+text = "Net:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="network_state_label" type="Label" parent="ui/hud2/players/v_box_container/network_state"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -3.5
+offset_bottom = 3.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+text = "NOTHING"
+script = ExtResource("2_8ce7h")
+
+[connection signal="state_changed" from="." to="ui/hud2" method="_on_game_state_changed"]
+[connection signal="state_changed" from="." to="ui/hud2/players/v_box_container/game_state/game_state_label" method="_on_state_changed"]
+[connection signal="player_added" from="lobby" to="ui/hud2/menu/lobby" method="_on_lobby_player_added"]
+[connection signal="scenario_changed" from="lobby" to="ui/hud2/menu/lobby" method="_on_lobby_scenario_changed"]
+[connection signal="state_changed" from="network" to="." method="_on_network_state_changed"]
 [connection signal="state_changed" from="network" to="ui/hud" method="_on_network_state_changed"]
-[connection signal="state_changed" from="network" to="ui/hud/state_label" method="_on_network_state_changed"]
+[connection signal="state_changed" from="network" to="ui/hud/state_label" method="_on_state_changed"]
+[connection signal="state_changed" from="network" to="ui/hud2/players/v_box_container/network_state/network_state_label" method="_on_state_changed"]
 [connection signal="pressed" from="ui/hud/menu/initial/create_server_button" to="ui/hud" method="_on_create_server_button_pressed"]
 [connection signal="pressed" from="ui/hud/menu/initial/connect_button" to="ui/hud" method="_on_connect_button_pressed"]
+[connection signal="pressed" from="ui/hud2/menu/initial/v_box_container/play_versus_button" to="ui/hud2" method="_on_play_versus_button_pressed"]
+[connection signal="pressed" from="ui/hud2/menu/initial/v_box_container/create_server_button" to="ui/hud2" method="_on_create_server_button_pressed"]
+[connection signal="pressed" from="ui/hud2/menu/initial/v_box_container/connect_button" to="ui/hud2" method="_on_connect_button_pressed"]
+[connection signal="pressed" from="ui/hud2/menu/lobby/v_box_container/player_list/model/button" to="ui/hud2/menu/lobby/v_box_container/player_list/model" method="_on_button_pressed"]

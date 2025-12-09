@@ -1,4 +1,4 @@
-class_name Lobby
+class_name OldGame
 extends Node2D
 
 signal state_changed(new_state: State)
